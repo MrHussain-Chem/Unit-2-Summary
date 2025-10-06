@@ -1,0 +1,878 @@
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp, Printer } from 'lucide-react';
+
+const RevisionSheets = () => {
+  const [activeTab, setActiveTab] = useState('A');
+  const [expandedSections, setExpandedSections] = useState({});
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const topics = [
+    { id: 'A', name: 'Atomic Structure', color: 'bg-blue-50 border-blue-300 text-blue-900' },
+    { id: 'B', name: 'Bonding & Structure', color: 'bg-green-50 border-green-300 text-green-900' },
+    { id: 'C', name: 'Periodicity', color: 'bg-purple-50 border-purple-300 text-purple-900' },
+    { id: 'D', name: 'Physical Chemistry', color: 'bg-orange-50 border-orange-300 text-orange-900' },
+    { id: 'E', name: 'Organic Chemistry', color: 'bg-pink-50 border-pink-300 text-pink-900' },
+    { id: 'CMD', name: 'Command Words', color: 'bg-gray-50 border-gray-300 text-gray-900' }
+  ];
+
+  const Section = ({ title, children, id }) => {
+    const isExpanded = expandedSections[id];
+    return (
+      <div className="mb-4 border rounded-lg overflow-hidden">
+        <button
+          onClick={() => toggleSection(id)}
+          className="w-full px-4 py-3 bg-white hover:bg-gray-50 flex justify-between items-center font-semibold text-left no-print-button"
+        >
+          {title}
+          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </button>
+        {isExpanded && (
+          <div className="p-4 bg-white border-t">
+            {children}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const KeyDef = ({ term, definition }) => (
+    <div className="mb-3 pl-4 border-l-4 border-yellow-400 bg-yellow-50 p-3 rounded">
+      <strong className="text-yellow-900">{term}:</strong> {definition}
+    </div>
+  );
+
+  const WorkedExample = ({ title, children }) => (
+    <div className="mb-3 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+      <strong className="text-blue-900">Example: {title}</strong>
+      <div className="mt-2 text-sm">{children}</div>
+    </div>
+  );
+
+  const Tip = ({ children }) => (
+    <div className="mb-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+      <strong className="text-green-900">💡 Application Tip:</strong>
+      <div className="mt-1 text-sm">{children}</div>
+    </div>
+  );
+
+  const contentA = (
+    <div>
+      <Section title="A1.1 Features of the Periodic Table" id="a1">
+        <KeyDef term="Atomic number" definition="Number of protons in the nucleus of an atom" />
+        <KeyDef term="Mass number" definition="Total number of protons and neutrons in the nucleus" />
+        <KeyDef term="Isotopes" definition="Atoms of the same element with different numbers of neutrons" />
+        <KeyDef term="Relative atomic mass" definition="Weighted average mass of all isotopes of an element relative to 1/12 the mass of carbon-12" />
+        
+        <WorkedExample title="Calculating relative atomic mass">
+          <div>Chlorine has two isotopes: Cl-35 (75%) and Cl-37 (25%)</div>
+          <div>Ar = (35 × 75/100) + (37 × 25/100)</div>
+          <div>Ar = 26.25 + 9.25 = <strong>35.5</strong></div>
+        </WorkedExample>
+        
+        <Tip>Use atomic and mass numbers to find protons, neutrons, and electrons. For ions, adjust electrons based on charge.</Tip>
+      </Section>
+
+      <Section title="A1.2 Electronic Structure" id="a2">
+        <KeyDef term="Energy levels (shells)" definition="Fixed energy levels where electrons orbit the nucleus" />
+        <KeyDef term="Subshells" definition="Subdivisions of energy levels (s, p, d, f)" />
+        <KeyDef term="Orbital" definition="Region of space where there is a high probability of finding an electron" />
+        
+        <div className="mb-3">
+          <strong>Electron filling rules:</strong>
+          <ol className="list-decimal ml-6 mt-2 space-y-1">
+            <li><strong>Aufbau principle:</strong> Fill lowest energy orbitals first</li>
+            <li><strong>Pauli exclusion principle:</strong> Maximum 2 electrons per orbital with opposite spins</li>
+            <li><strong>Hund&apos;s rule:</strong> Orbitals of equal energy filled singly before pairing</li>
+          </ol>
+        </div>
+        
+        <WorkedExample title="Electronic configuration of Calcium (Ca, Z=20)">
+          1s² 2s² 2p⁶ 3s² 3p⁶ 4s²
+        </WorkedExample>
+        
+        <Tip>Remember 4s fills before 3d! Order: 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p...</Tip>
+      </Section>
+
+      <Section title="A1.3 Ionisation Energy" id="a3">
+        <KeyDef term="First ionisation energy" definition="Energy required to remove one mole of electrons from one mole of gaseous atoms to form one mole of gaseous 1+ ions" />
+        
+        <div className="mb-3 p-3 bg-gray-50 rounded">
+          <strong>Equation format:</strong> X(g) → X⁺(g) + e⁻
+        </div>
+        
+        <div className="mb-3">
+          <strong>Factors affecting ionisation energy:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-2">
+            <li><strong>Nuclear charge:</strong> Greater positive charge attracts electrons more strongly → higher IE</li>
+            <li><strong>Number of shells:</strong> More shells means outer electrons further from nucleus → lower IE</li>
+            <li><strong>Shielding:</strong> Inner electrons repel outer electrons, reducing effective nuclear charge → lower IE</li>
+            <li><strong>Subshells:</strong> Different subshells have different energies → variations in IE trends</li>
+          </ul>
+        </div>
+        
+        <Tip>When explaining IE trends, mention ALL relevant factors: nuclear charge, distance from nucleus, and shielding.</Tip>
+      </Section>
+    </div>
+  );
+
+  const contentB = (
+    <div>
+      <Section title="B1.1 Metallic Bonding" id="b1">
+        <KeyDef term="Metallic bonding" definition="Electrostatic attraction between positive metal ions and delocalized electrons" />
+        
+        <div className="mb-3">
+          <strong>Structure:</strong> Giant metallic lattice with layers of positive ions in a &quot;sea&quot; of delocalized electrons
+        </div>
+        
+        <div className="mb-3">
+          <strong>Properties linked to structure:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>High melting point:</strong> Strong metallic bonds throughout structure</li>
+            <li><strong>Electrical conductivity:</strong> Mobile delocalized electrons carry charge</li>
+            <li><strong>Malleability:</strong> Layers can slide over each other without breaking bonds</li>
+          </ul>
+        </div>
+        
+        <Tip>Always link properties to structure and bonding. For conductivity, mention &quot;mobile delocalized electrons&quot;.</Tip>
+      </Section>
+
+      <Section title="B1.2 Ionic Bonding" id="b2">
+        <KeyDef term="Ionic bonding" definition="Electrostatic attraction between oppositely charged ions" />
+        
+        <div className="mb-3">
+          <strong>Structure:</strong> Giant ionic lattice with ions in fixed positions
+        </div>
+        
+        <div className="mb-3">
+          <strong>Properties:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>High melting point:</strong> Strong ionic bonds throughout structure</li>
+            <li><strong>Conducts when molten/dissolved:</strong> Ions become mobile and can carry charge</li>
+            <li><strong>Brittle:</strong> Layers repel when displaced (like charges align)</li>
+          </ul>
+        </div>
+        
+        <Tip>Ionic compounds only conduct when ions are FREE TO MOVE (molten or dissolved), not when solid.</Tip>
+      </Section>
+
+      <Section title="B1.3 Covalent Bonding" id="b3">
+        <KeyDef term="Covalent bonding" definition="Electrostatic attraction between two nuclei and a shared pair of electrons between them" />
+        <KeyDef term="Dative covalent bond" definition="Both electrons in shared pair come from one atom" />
+        
+        <div className="mb-3">
+          <strong>Types of covalent bonds:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Single bond:</strong> One shared pair of electrons</li>
+            <li><strong>Double bond:</strong> Two shared pairs of electrons</li>
+            <li><strong>Triple bond:</strong> Three shared pairs of electrons</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3 p-3 bg-gray-50 rounded">
+          <strong>Molecular orbitals:</strong>
+          <div><strong>Sigma (σ) bond:</strong> Head-on overlap along axis between nuclei</div>
+          <div><strong>Pi (π) bond:</strong> Sideways overlap of p orbitals above and below axis</div>
+        </div>
+        
+        <Tip>Bond strength relationship: Triple &gt; Double &gt; Single. Shorter bonds are stronger.</Tip>
+      </Section>
+
+      <Section title="B1.5 Molecular Shape (VSEPR)" id="b5">
+        <div className="mb-3">
+          <strong>Core principle:</strong> Electron pairs repel each other and arrange to minimize repulsion
+        </div>
+        
+        <div className="mb-3">
+          <strong>Shapes to know:</strong>
+          <table className="w-full mt-2 text-sm border">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">Shape</th>
+                <th className="border p-2">Electron pairs</th>
+                <th className="border p-2">Bond angle</th>
+                <th className="border p-2">Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border p-2">Linear</td>
+                <td className="border p-2">2</td>
+                <td className="border p-2">180°</td>
+                <td className="border p-2">CO₂</td>
+              </tr>
+              <tr>
+                <td className="border p-2">Trigonal planar</td>
+                <td className="border p-2">3</td>
+                <td className="border p-2">120°</td>
+                <td className="border p-2">BF₃</td>
+              </tr>
+              <tr>
+                <td className="border p-2">Tetrahedral</td>
+                <td className="border p-2">4</td>
+                <td className="border p-2">109.5°</td>
+                <td className="border p-2">CH₄</td>
+              </tr>
+              <tr>
+                <td className="border p-2">Pyramidal</td>
+                <td className="border p-2">3 bonding + 1 lone</td>
+                <td className="border p-2">~107°</td>
+                <td className="border p-2">NH₃</td>
+              </tr>
+              <tr>
+                <td className="border p-2">Non-linear</td>
+                <td className="border p-2">2 bonding + 2 lone</td>
+                <td className="border p-2">~104.5°</td>
+                <td className="border p-2">H₂O</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <Tip>Lone pairs repel MORE than bonding pairs, reducing bond angles. Remember specific angles!</Tip>
+      </Section>
+
+      <Section title="B1.6 Electronegativity & Polarity" id="b6">
+        <KeyDef term="Electronegativity" definition="Ability of an atom to attract the bonding pair of electrons in a covalent bond" />
+        
+        <div className="mb-3">
+          <strong>Trend:</strong> Increases across period (increasing nuclear charge), decreases down group (increasing distance/shielding)
+        </div>
+        
+        <div className="mb-3">
+          <strong>Determining polarity:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Bond polarity:</strong> Significant electronegativity difference → polar bond (δ+ and δ-)</li>
+            <li><strong>Molecular polarity:</strong> Polar bonds + asymmetric shape → polar molecule</li>
+            <li>Even with polar bonds, symmetric molecules are non-polar (dipoles cancel)</li>
+          </ul>
+        </div>
+        
+        <WorkedExample title="CO₂ vs H₂O polarity">
+          <div><strong>CO₂:</strong> Linear, polar C=O bonds but dipoles cancel → non-polar molecule</div>
+          <div><strong>H₂O:</strong> Bent shape, polar O-H bonds, dipoles don&apos;t cancel → polar molecule</div>
+        </WorkedExample>
+      </Section>
+
+      <Section title="B1.7 Intermolecular Forces" id="b7">
+        <div className="mb-3">
+          <strong>Three types (weakest to strongest):</strong>
+          <ol className="list-decimal ml-6 mt-2 space-y-2">
+            <li><strong>Van der Waals forces (London dispersion forces):</strong> Temporary dipole-induced dipole, present in ALL molecules</li>
+            <li><strong>Permanent dipole-permanent dipole:</strong> Between polar molecules, stronger than van der Waals forces</li>
+            <li><strong>Hydrogen bonding:</strong> Strongest IMF, only when H bonded to F/O/N</li>
+          </ol>
+        </div>
+        
+        <KeyDef term="Hydrogen bonding (exact wording)" definition="Electrostatic attraction between a hydrogen atom bonded to F/O/N (δ+) and a lone pair of electrons on F/O/N in a different molecule (δ-)" />
+        
+        <Tip>Van der Waals forces and London dispersion forces are the same thing - both terms are correct.</Tip>
+      </Section>
+    </div>
+  );
+
+  const contentC = (
+    <div>
+      <Section title="C1.1 Period 3 Physical Properties" id="c1">
+        <div className="mb-3">
+          <strong>Atomic radius trend:</strong> Decreases across period
+          <ul className="list-disc ml-6 mt-2">
+            <li><strong>Explanation:</strong> Nuclear charge increases, electrons in same shell, similar shielding, electrons pulled closer</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Melting point trend:</strong> Na &lt; Mg &lt; Al (increases), Si (high), then P₄, S₈, Cl₂, Ar (low)
+          <ul className="list-disc ml-6 mt-2">
+            <li><strong>Na, Mg, Al:</strong> Metallic bonding, increasing strength</li>
+            <li><strong>Si:</strong> Giant covalent structure, very strong covalent bonds</li>
+            <li><strong>P₄, S₈, Cl₂, Ar:</strong> Simple molecular, weak intermolecular forces</li>
+          </ul>
+        </div>
+        
+        <Tip>Always link melting point to STRUCTURE and BONDING type, not just &quot;strong bonds&quot;.</Tip>
+      </Section>
+
+      <Section title="C1.2 Oxidation Numbers & Redox" id="c2">
+        <div className="mb-3">
+          <strong>Rules (must memorize):</strong>
+          <ol className="list-decimal ml-6 mt-2 space-y-1">
+            <li>Element in uncombined state: 0</li>
+            <li>Monoatomic ion: charge on ion</li>
+            <li>Sum in neutral compound: 0</li>
+            <li>Sum in polyatomic ion: charge on ion</li>
+            <li>Hydrogen: usually +1 (except -1 in metal hydrides)</li>
+            <li>Oxygen: usually -2 (except -1 in peroxides, +2 in OF₂)</li>
+            <li>Group 1: always +1; Group 2: always +2</li>
+          </ol>
+        </div>
+        
+        <KeyDef term="Oxidation" definition="Loss of electrons / increase in oxidation number" />
+        <KeyDef term="Reduction" definition="Gain of electrons / decrease in oxidation number" />
+        
+        <WorkedExample title="Oxidation number in SO₄²⁻">
+          <div>Let S = x</div>
+          <div>x + 4(-2) = -2</div>
+          <div>x - 8 = -2</div>
+          <div>x = +6</div>
+        </WorkedExample>
+      </Section>
+
+      <Section title="C1.3 Reactions of Period 3 Elements" id="c3">
+        <div className="mb-3">
+          <strong>With oxygen (products to know):</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>4Na + O₂ → 2Na₂O</li>
+            <li>2Mg + O₂ → 2MgO</li>
+            <li>4Al + 3O₂ → 2Al₂O₃</li>
+            <li>P₄ + 5O₂ → P₄O₁₀</li>
+            <li>S + O₂ → SO₂</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>With water:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>2Na + 2H₂O → 2NaOH + H₂ (vigorous, cold water)</li>
+            <li>Mg + H₂O → Mg(OH)₂ + H₂ (steam only)</li>
+          </ul>
+        </div>
+        
+        <Tip>Know conditions (cold water vs steam) and observations (vigor of reaction).</Tip>
+      </Section>
+
+      <Section title="C1.5 Acid-Base Behaviour" id="c5">
+        <div className="mb-3">
+          <strong>Period 3 oxide trend:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Metal oxides (Na₂O, MgO):</strong> Basic</li>
+            <li><strong>Al₂O₃:</strong> Amphoteric (reacts with both acids and bases)</li>
+            <li><strong>Non-metal oxides (P₄O₁₀, SO₂):</strong> Acidic</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Acids formed in water:</strong>
+          <ul className="list-disc ml-6 mt-2">
+            <li>P₄O₁₀ → H₃PO₄ (phosphoric acid)</li>
+            <li>SO₂/SO₃ → H₂SO₄ (sulfuric acid)</li>
+          </ul>
+        </div>
+      </Section>
+
+      <Section title="C1.6 Chlorides with Water" id="c6">
+        <div className="mb-3">
+          <strong>Reactions producing HCl (acidic):</strong>
+          <table className="w-full mt-2 text-sm border">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">Chloride</th>
+                <th className="border p-2">Approximate pH</th>
+                <th className="border p-2">Reaction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border p-2">NaCl</td>
+                <td className="border p-2">~7</td>
+                <td className="border p-2">Dissolves, neutral</td>
+              </tr>
+              <tr>
+                <td className="border p-2">MgCl₂</td>
+                <td className="border p-2">~6</td>
+                <td className="border p-2">Dissolves, slightly acidic</td>
+              </tr>
+              <tr>
+                <td className="border p-2">Al₂Cl₆</td>
+                <td className="border p-2">~3</td>
+                <td className="border p-2">Hydrolysis produces HCl</td>
+              </tr>
+              <tr>
+                <td className="border p-2">SiCl₄</td>
+                <td className="border p-2">~2</td>
+                <td className="border p-2">Vigorous hydrolysis</td>
+              </tr>
+              <tr>
+                <td className="border p-2">PCl₅</td>
+                <td className="border p-2">~1</td>
+                <td className="border p-2">Violent hydrolysis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <Tip>Learn the pH trend: becomes more acidic across period as chlorides hydrolyze more readily.</Tip>
+      </Section>
+    </div>
+  );
+
+  const contentD = (
+    <div>
+      <Section title="D1.1 The Mole Concept" id="d1">
+        <KeyDef term="The mole" definition="One mole of any substance contains the same number of particles as there are atoms in exactly 12.00g of carbon-12" />
+        <KeyDef term="Avogadro constant" definition="6.02 × 10²³ mol⁻¹" />
+        <KeyDef term="Molar mass" definition="Mass in grams of one mole of a substance (units: g mol⁻¹)" />
+        <KeyDef term="Concentration" definition="Number of moles of substance dissolved in water to produce a volume of 1 dm³ of solution (units: mol dm⁻³)" />
+        
+        <div className="mb-3 p-3 bg-gray-50 rounded">
+          <strong>Essential formulae:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>n = m/M (moles = mass / molar mass)</li>
+            <li>Number of particles = n × 6.02 × 10²³</li>
+            <li>n = V/24 (for gases at RTP, V in dm³)</li>
+            <li>n = cV (moles = concentration × volume in dm³)</li>
+            <li>% yield = (actual yield / theoretical yield) × 100</li>
+          </ul>
+        </div>
+        
+        <WorkedExample title="Calculate moles in 5.3g of Na₂CO₃">
+          <div>M(Na₂CO₃) = (2×23) + 12 + (3×16) = 106 g mol⁻¹</div>
+          <div>n = m/M = 5.3/106 = <strong>0.05 mol</strong></div>
+        </WorkedExample>
+        
+        <Tip>ALWAYS convert cm³ to dm³ by dividing by 1000. ALWAYS include units in final answer.</Tip>
+      </Section>
+
+      <Section title="D1.2 Chemical Kinetics" id="d2">
+        <div className="mb-3">
+          <strong>Factors affecting rate (explain using collision theory):</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-2">
+            <li><strong>Concentration:</strong> More particles per unit volume → more frequent collisions → faster rate</li>
+            <li><strong>Pressure (gases):</strong> More particles in same space → more frequent collisions → faster rate</li>
+            <li><strong>Temperature:</strong> Particles have more kinetic energy → more frequent collisions AND more collisions exceed Ea → faster rate</li>
+            <li><strong>Surface area:</strong> More surface exposed → more collisions possible → faster rate</li>
+            <li><strong>Catalyst:</strong> Provides alternative pathway with lower Ea → more collisions exceed Ea → faster rate</li>
+          </ul>
+        </div>
+        
+        <KeyDef term="Catalyst" definition="Speeds up rate of reaction without altering products, being itself unchanged chemically and in mass at end of reaction" />
+        <KeyDef term="Activation energy" definition="Minimum energy required for a reaction to occur" />
+        
+        <Tip>For temperature effects, mention BOTH more frequent collisions AND more particles exceeding Ea.</Tip>
+      </Section>
+
+      <Section title="D1.3 Chemical Energetics" id="d3">
+        <KeyDef term="Enthalpy change (ΔH)" definition="Heat energy change at constant pressure" />
+        <KeyDef term="Exothermic" definition="ΔH is negative, products have less energy than reactants, heat released" />
+        <KeyDef term="Endothermic" definition="ΔH is positive, products have more energy than reactants, heat absorbed" />
+        
+        <div className="mb-3 p-3 bg-gray-50 rounded">
+          <strong>Standard conditions:</strong> 100 kPa pressure, 298 K (25°C), 1 mol dm⁻³ concentration
+        </div>
+        
+        <KeyDef term="Δ_fH°" definition="Standard enthalpy change of formation: Enthalpy change when one mole of a substance is formed from its elements in their standard states" />
+        <KeyDef term="Δ_cH°" definition="Standard enthalpy change of combustion: Enthalpy change when one mole of a substance is burnt completely in oxygen" />
+        
+        <div className="mb-3">
+          <strong>Hess&apos;s Law calculations:</strong>
+          <ul className="list-disc ml-6 mt-2">
+            <li>Formation: ΔH° = Σ Δ_fH°(products) - Σ Δ_fH°(reactants)</li>
+            <li>Combustion: ΔH° = Σ Δ_cH°(reactants) - Σ Δ_cH°(products)</li>
+            <li>Calorimetry: Q = mcΔT</li>
+          </ul>
+        </div>
+        
+        <Tip>Check signs carefully! For formation route: products minus reactants. For combustion route: reactants minus products.</Tip>
+      </Section>
+
+      <Section title="D1.4 Chemical Equilibrium" id="d4">
+        <KeyDef term="Dynamic equilibrium" definition="In a closed system, the rate of forward reaction equals the rate of backward reaction, and concentrations of reactants and products remain constant (but both reactions continue)" />
+        
+        <div className="mb-3">
+          <strong>Le Chatelier&apos;s Principle:</strong> When a system at equilibrium is subjected to a change, the position of equilibrium shifts to oppose that change
+        </div>
+        
+        <div className="mb-3">
+          <strong>Effects on equilibrium:</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Concentration increase:</strong> Equilibrium shifts to use up added substance</li>
+            <li><strong>Pressure increase:</strong> Equilibrium shifts to side with fewer gas molecules</li>
+            <li><strong>Temperature increase:</strong> Equilibrium shifts in endothermic direction</li>
+            <li><strong>Catalyst:</strong> NO effect on position, but equilibrium reached faster</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3 p-3 bg-gray-50 rounded">
+          <strong>Kc expression:</strong> For aA + bB ⇌ cC + dD
+          <div>Kc = [C]ᶜ[D]ᵈ / [A]ᵃ[B]ᵇ</div>
+          <div className="italic">Exclude solids and pure liquids from expression</div>
+        </div>
+        
+        <Tip>Only TEMPERATURE changes the value of K. Concentration, pressure, and catalyst do NOT change K.</Tip>
+      </Section>
+    </div>
+  );
+
+  const contentE = (
+    <div>
+      <Section title="E1.1 Key Terms & Nomenclature" id="e1">
+        <KeyDef term="Saturated hydrocarbon" definition="Contains only single C-C bonds" />
+        <KeyDef term="Unsaturated hydrocarbon" definition="Contains at least one C=C double bond" />
+        <KeyDef term="Homologous series" definition="Family of compounds with same functional group, same general formula, similar chemical properties, gradual change in physical properties" />
+        
+        <div className="mb-3">
+          <strong>General formulae to memorize:</strong>
+          <ul className="list-disc ml-6 mt-2">
+            <li>Alkanes: CₙH₂ₙ₊₂</li>
+            <li>Alkenes: CₙH₂ₙ</li>
+            <li>Halogenoalkanes: CₙH₂ₙ₊₁X</li>
+            <li>Alcohols: CₙH₂ₙ₊₁OH</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>IUPAC naming rules (up to 6 carbons):</strong>
+          <ol className="list-decimal ml-6 mt-2">
+            <li>Identify longest carbon chain (parent name)</li>
+            <li>Number from end giving lowest numbers</li>
+            <li>Name substituents with position numbers</li>
+            <li>Multiple identical: di-, tri-, tetra-</li>
+            <li>List alphabetically</li>
+          </ol>
+        </div>
+        
+        <Tip>Parent names: methane, ethane, propane, butane, pentane, hexane. Check spelling!</Tip>
+      </Section>
+
+      <Section title="E1.4 Isomerism" id="e4">
+        <div className="mb-3">
+          <strong>Structural isomerism:</strong> Same molecular formula, different structural arrangement
+          <ul className="list-disc ml-6 mt-2">
+            <li>Chain isomers: Different carbon skeletons</li>
+            <li>Position isomers: Functional group in different positions</li>
+            <li>Functional group isomers: Different functional groups</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>E/Z isomerism (stereoisomerism):</strong>
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>Requires C=C double bond (no rotation)</li>
+            <li>Two different groups on each carbon of double bond</li>
+            <li><strong>E isomer:</strong> Higher priority groups on opposite sides</li>
+            <li><strong>Z isomer:</strong> Higher priority groups on same side</li>
+            <li>Priority by atomic number (Cahn-Ingold-Prelog rules)</li>
+          </ul>
+        </div>
+      </Section>
+
+      <Section title="E1.7 Addition Reactions of Alkenes" id="e7a">
+        <div className="mb-3">
+          <strong>Hydrogenation:</strong> Alkene + H₂ → alkane
+          <ul className="list-disc ml-6 mt-1">
+            <li>Conditions: Ni catalyst, 150°C</li>
+            <li>Example: CH₂=CH₂ + H₂ → CH₃CH₃</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Halogenation:</strong> Alkene + X₂ → dihaloalkane
+          <ul className="list-disc ml-6 mt-1">
+            <li>Conditions: Room temperature</li>
+            <li>Example: CH₂=CH₂ + Br₂ → CH₂BrCH₂Br</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Addition of hydrogen halides:</strong> Alkene + HX → halogenoalkane
+          <ul className="list-disc ml-6 mt-1">
+            <li>Conditions: Room temperature</li>
+            <li>Markovnikov&apos;s rule: H adds to carbon with more H atoms</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Hydration:</strong> Alkene + H₂O → alcohol
+          <ul className="list-disc ml-6 mt-1">
+            <li>Conditions: Conc. H₃PO₄ catalyst, 300°C, 60 atm</li>
+            <li>Example: CH₂=CH₂ + H₂O → CH₃CH₂OH</li>
+          </ul>
+        </div>
+        
+        <Tip>Learn all conditions! Exams frequently test reaction conditions.</Tip>
+      </Section>
+
+      <Section title="E1.7 Substitution & Elimination Reactions" id="e7b">
+        <div className="mb-3">
+          <strong>Substitution of halogenoalkanes (with aqueous NaOH):</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Halogenoalkane + NaOH(aq) → alcohol + NaX</li>
+            <li>Conditions: Heat under reflux with aqueous NaOH</li>
+            <li>Example: CH₃CH₂Br + NaOH → CH₃CH₂OH + NaBr</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Elimination of halogenoalkanes (with ethanolic NaOH):</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Halogenoalkane + NaOH(ethanol) → alkene + NaX + H₂O</li>
+            <li>Conditions: Heat under reflux with ethanolic NaOH</li>
+            <li>Competes with substitution</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Substitution of alcohols with PCl₅:</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Alcohol + PCl₅ → halogenoalkane + POCl₃ + HCl</li>
+            <li>Observation: Steamy fumes of HCl</li>
+          </ul>
+        </div>
+        
+        <Tip>Aqueous NaOH = substitution. Ethanolic NaOH = elimination. Know the difference!</Tip>
+      </Section>
+
+      <Section title="E1.7 Oxidation & Esterification" id="e7c">
+        <div className="mb-3">
+          <strong>Oxidation of primary alcohols:</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Primary alcohol + [O] → carboxylic acid + H₂O</li>
+            <li>Conditions: Heat under reflux with acidified K₂Cr₂O₇</li>
+            <li>Observation: Orange to green color change</li>
+            <li>Example: CH₃CH₂OH + 2[O] → CH₃COOH + H₂O</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Esterification (condensation):</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Alcohol + carboxylic acid ⇌ ester + water</li>
+            <li>Conditions: Conc. H₂SO₄ catalyst, heat</li>
+            <li>Reversible reaction</li>
+            <li>Example: CH₃OH + CH₃COOH ⇌ CH₃COOCH₃ + H₂O</li>
+          </ul>
+        </div>
+        
+        <Tip>For oxidation, always mention the color change (orange to green) as an observation.</Tip>
+      </Section>
+
+      <Section title="E1.8 Industrial Reactions" id="e8">
+        <div className="mb-3">
+          <strong>Cracking:</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Large alkane → smaller alkane + alkene</li>
+            <li><strong>Thermal:</strong> 700-1000°C, high pressure</li>
+            <li><strong>Catalytic:</strong> 450°C, zeolite catalyst</li>
+            <li>Purpose: Meet demand for smaller, more useful molecules</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Addition polymerization:</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Many alkene molecules join to form long chain</li>
+            <li>No other products formed</li>
+            <li>Examples: poly(ethene), poly(propene), PVC, PTFE</li>
+          </ul>
+        </div>
+        
+        <div className="mb-3">
+          <strong>Condensation polymerization:</strong>
+          <ul className="list-disc ml-6 mt-1">
+            <li>Monomers with two functional groups join</li>
+            <li>Small molecule (usually H₂O) eliminated each time</li>
+            <li>Polyesters: Dicarboxylic acid + diol → polyester + water</li>
+          </ul>
+        </div>
+      </Section>
+    </div>
+  );
+
+  const contentCMD = (
+    <div>
+      <Section title="Critical Command Words - Exact Definitions" id="cmd1">
+        <div className="mb-3 p-3 bg-red-50 border-l-4 border-red-400 rounded">
+          <strong className="text-red-900">⚠️ These definitions are from official Pearson documentation</strong>
+          <div className="mt-1 text-sm">Understanding these precisely is essential for exam success</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Calculate</strong>
+          <p className="mt-1">Obtain numerical answer, showing relevant working and appropriate units where required</p>
+          <div className="mt-2 text-sm text-gray-600">Always show working. Always include units.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Compare</strong>
+          <p className="mt-1">Look for similarities AND differences. Answer must relate to both/all things mentioned</p>
+          <div className="mt-2 text-sm text-gray-600">Must discuss BOTH items. Use &quot;whereas&quot;, &quot;however&quot;, &quot;in contrast&quot;.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Describe</strong>
+          <p className="mt-1">Give an account of something. Statements need to be developed but don&apos;t need justification</p>
+          <div className="mt-2 text-sm text-gray-600">Say WHAT happens, not WHY. No reasoning needed.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Explain</strong>
+          <p className="mt-1">Requires justification/exemplification. Must contain reasoning. Mark scheme:</p>
+          <ul className="list-disc ml-6 mt-1 text-sm">
+            <li>1 mark: Identification of point</li>
+            <li>2 marks: Identification + linked justification</li>
+            <li>3 marks: Identification + two linked justifications OR further development</li>
+            <li>4 marks: Two identifications with expansions OR one with three detailed points</li>
+          </ul>
+          <div className="mt-2 text-sm text-gray-600">Use &quot;because&quot;, &quot;this is due to&quot;, &quot;as a result&quot;. Link statements.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Evaluate</strong>
+          <p className="mt-1">Review information, bring together to form conclusion. Use evidence including strengths, weaknesses, alternatives. Make supported judgement</p>
+          <div className="mt-2 text-sm text-gray-600">Consider multiple perspectives. Make judgements. Support with evidence.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Discuss</strong>
+          <p className="mt-1">Identify the issue. Explore all aspects. Investigate by reasoning or argument. Does NOT require conclusion</p>
+          <div className="mt-2 text-sm text-gray-600">Present multiple viewpoints. No single answer required.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Suggest</strong>
+          <p className="mt-1">Propose likely solution or application using scientific knowledge</p>
+          <div className="mt-2 text-sm text-gray-600">Apply knowledge to unfamiliar contexts. Reasonable answers accepted.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">State what is meant by</strong>
+          <p className="mt-1">Provide accepted definition of term</p>
+          <div className="mt-2 text-sm text-gray-600">Use exact wording from specification/mark schemes.</div>
+        </div>
+
+        <div className="mb-4 p-3 bg-white border rounded">
+          <strong className="text-lg">Show that</strong>
+          <p className="mt-1">Prove numerical figure is as stated. Answer must be to at least ONE MORE SIGNIFICANT FIGURE than stated in question</p>
+          <div className="mt-2 text-sm text-gray-600">Calculate to higher precision than given answer.</div>
+        </div>
+      </Section>
+
+      <Section title="Common Errors to Avoid" id="cmd2">
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #1: Not reading questions carefully</strong>
+          <p className="mt-1 text-sm">Students answer a different question than asked. Example: Question says &quot;explain&quot; but student only describes.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Underline command word, identify what specifically is being asked</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #2: Missing or incorrect units</strong>
+          <p className="mt-1 text-sm">Calculations without units lose marks even if number correct.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Always write units at each step, check they match question requirements</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #3: Not showing working</strong>
+          <p className="mt-1 text-sm">Final answer alone may not gain full marks.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Show every step, even if obvious to you</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #4: Insufficient explanation</strong>
+          <p className="mt-1 text-sm">Single word or phrase when justification needed. Describing WHAT without explaining WHY.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Use &quot;because&quot; or &quot;this is due to&quot; to link statements</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #5: Generic answers</strong>
+          <p className="mt-1 text-sm">Not using data/information given in question.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Reference specific values, data, or context from question</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #6: Calculation errors</strong>
+          <p className="mt-1 text-sm">Not converting units, forgetting limiting reagent, arithmetic mistakes.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Convert units first, double-check arithmetic, verify answer makes sense</p>
+        </div>
+
+        <div className="mb-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <strong>❌ Error #7: Insufficient detail for marks</strong>
+          <p className="mt-1 text-sm">3-mark question answered with one sentence.</p>
+          <p className="mt-1 text-sm font-semibold">✓ Fix: Rule of thumb - one developed point per mark available</p>
+        </div>
+      </Section>
+    </div>
+  );
+
+  const currentTopic = topics.find(t => t.id === activeTab);
+
+  return (
+    <div className="min-h-screen bg-gray-100 print:bg-white">
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          .no-print-button { display: none !important; }
+          body { background: white; }
+          .print-break { page-break-before: always; }
+          button { display: none !important; }
+        }
+      `}</style>
+
+      <div className="bg-white border-b p-4 print:border-0">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900">AAQ Applied Science Unit 2 Chemistry</h1>
+          <p className="text-sm text-gray-600 mt-1">Interactive Revision Summary Sheets | First Assessment: May/June 2026</p>
+          <button
+            onClick={handlePrint}
+            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2 no-print"
+          >
+            <Printer size={18} />
+            Print Current Sheet
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white border-b no-print">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex gap-2 overflow-x-auto py-2">
+            {topics.map(topic => (
+              <button
+                key={topic.id}
+                onClick={() => setActiveTab(topic.id)}
+                className={`px-4 py-2 rounded-t font-medium whitespace-nowrap transition-colors ${
+                  activeTab === topic.id
+                    ? `${topic.color} border-b-2 border-current`
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {topic.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto p-4">
+        <div className={`${currentTopic.color} border-2 rounded-lg p-6 print:border-0`}>
+          <h2 className="text-2xl font-bold mb-4 print:mb-2">
+            Content Area {activeTab !== 'CMD' ? activeTab : ''}: {currentTopic.name}
+          </h2>
+          
+          <div className="mt-4">
+            {activeTab === 'A' && contentA}
+            {activeTab === 'B' && contentB}
+            {activeTab === 'C' && contentC}
+            {activeTab === 'D' && contentD}
+            {activeTab === 'E' && contentE}
+            {activeTab === 'CMD' && contentCMD}
+          </div>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-gray-600 print:hidden">
+          <p>Click sections to expand/collapse • Use Print button for hard copy</p>
+          <p className="mt-2">Based on Pearson AAQ Applied Science Unit 2 specification and mark scheme language</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RevisionSheets;
